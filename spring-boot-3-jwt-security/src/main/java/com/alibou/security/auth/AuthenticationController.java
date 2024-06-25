@@ -26,7 +26,8 @@ public class AuthenticationController {
   ) {
     return ResponseEntity.ok(service.register(request));
   }
-  @PostMapping("/authenticate")
+  
+  @PostMapping("/authenticate") /*login*/
   public ResponseEntity<AuthenticationResponse> authenticate(
       @RequestBody AuthenticationRequest request
   ) {
@@ -39,13 +40,6 @@ public class AuthenticationController {
       HttpServletResponse response
   ) throws IOException {
     service.refreshToken(request, response);
-  }
-  
-  @PostMapping("/login")
-  public ResponseEntity<AuthenticationResponse> login(
-      @RequestBody LoginRequest login,HttpServletRequest request,HttpServletResponse response
-  ) throws IOException {
-    return ResponseEntity.ok(service.login(login,request,response));
   }
 
   

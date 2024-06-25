@@ -13,12 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -90,16 +88,5 @@ public class AuthenticationService {
 		}
 	}
 
-	public AuthenticationResponse login(LoginRequest login,HttpServletRequest request,HttpServletResponse response) throws IOException {
-		Optional<User> opUser = repository.findByEmail(login.getEmail());
-		if (opUser.isPresent() && BCrypt.checkpw(login.getPassword(), opUser.get().getPassword())) {
-			var jwtToken = jwtService.generateToken(opUser.get());
-			var refreshToken = jwtService.generateRefreshToken(opUser.get());
-			
-			return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
-		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		response.getWriter().write("Invalid user or password ");
-		return null;
-	}
+
 }
