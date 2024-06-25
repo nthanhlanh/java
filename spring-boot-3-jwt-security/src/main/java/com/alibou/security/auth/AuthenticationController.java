@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,19 @@ public class AuthenticationController {
   ) throws IOException {
     service.refreshToken(request, response);
   }
+  
+  @PostMapping("/login")
+  public ResponseEntity<AuthenticationResponse> login(
+      @RequestBody LoginRequest login,HttpServletRequest request,HttpServletResponse response
+  ) throws IOException {
+    return ResponseEntity.ok(service.login(login,request,response));
+  }
 
+  
+  @GetMapping("/test")
+  public void test() {
+	  System.out.println(4444);
+	  System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+  }
 
 }
