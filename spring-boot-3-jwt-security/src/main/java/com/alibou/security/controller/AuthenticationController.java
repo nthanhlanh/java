@@ -1,4 +1,4 @@
-package com.alibou.security.auth;
+package com.alibou.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibou.security.dto.AuthenticationRequest;
+import com.alibou.security.dto.AuthenticationResponse;
+import com.alibou.security.dto.RegisterRequest;
+import com.alibou.security.service.AuthenticationService;
 
 import java.io.IOException;
 

@@ -24,7 +24,7 @@ public class OpenApiConfig {
     private String prodUrl;
 
     @Bean
-    public OpenAPI myOpenAPI() {
+    OpenAPI myOpenAPI() {
         Server devServer = new Server();
         devServer.setUrl(devUrl);
         devServer.setDescription("Server URL in Development environment");
@@ -49,19 +49,19 @@ public class OpenApiConfig {
 
         return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
     }
-    
+
     @Bean
-    public GroupedOpenApi authApis() { // group all APIs with `auth` in the path
-      return GroupedOpenApi.builder().group("auth").pathsToMatch("/api/v1/auth/**").build();
+    GroupedOpenApi authApis() { // group all APIs with `auth` in the path
+        return GroupedOpenApi.builder().group("auth").pathsToMatch("/api/v1/auth/**").build();
     }
-    
+
     @Bean
-    public GroupedOpenApi bookApis() { // group all APIs with `auth` in the path
-      return GroupedOpenApi.builder().group("books").pathsToMatch("/api/v1/books/**").build();
+    GroupedOpenApi bookApis() { // group all APIs with `auth` in the path
+        return GroupedOpenApi.builder().group("books").pathsToMatch("/api/v1/books/**").build();
     }
-    
+
     @Bean
-    public GroupedOpenApi adminApis() { // group all APIs with `admin` in the path
-      return GroupedOpenApi.builder().group("admin").pathsToMatch("/api/v1/admin**","/api/v1/management","/api/v1/demo-controller").build();
+    GroupedOpenApi adminApis() { // group all APIs with `admin` in the path
+        return GroupedOpenApi.builder().group("admin").pathsToMatch("/api/v1/admin**", "/api/v1/management", "/api/v1/demo-controller").build();
     }
 }

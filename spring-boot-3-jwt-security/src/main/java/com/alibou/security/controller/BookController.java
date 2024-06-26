@@ -1,4 +1,4 @@
-package com.alibou.security.book;
+package com.alibou.security.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibou.security.domain.Book;
+import com.alibou.security.dto.BookRequest;
+import com.alibou.security.service.BookService;
 
 import java.util.List;
 

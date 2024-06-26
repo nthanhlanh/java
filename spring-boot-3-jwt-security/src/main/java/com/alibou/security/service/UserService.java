@@ -1,9 +1,13 @@
-package com.alibou.security.user;
+package com.alibou.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.alibou.security.domain.User;
+import com.alibou.security.dto.ChangePasswordRequest;
+import com.alibou.security.repository.UserRepository;
 
 import java.security.Principal;
 

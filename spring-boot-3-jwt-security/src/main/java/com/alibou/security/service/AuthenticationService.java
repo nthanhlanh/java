@@ -1,11 +1,14 @@
-package com.alibou.security.auth;
+package com.alibou.security.service;
 
 import com.alibou.security.config.JwtService;
-import com.alibou.security.token.Token;
-import com.alibou.security.token.TokenRepository;
-import com.alibou.security.token.TokenType;
-import com.alibou.security.user.User;
-import com.alibou.security.user.UserRepository;
+import com.alibou.security.domain.Token;
+import com.alibou.security.domain.User;
+import com.alibou.security.dto.AuthenticationRequest;
+import com.alibou.security.dto.AuthenticationResponse;
+import com.alibou.security.dto.RegisterRequest;
+import com.alibou.security.dto.TokenType;
+import com.alibou.security.repository.TokenRepository;
+import com.alibou.security.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
