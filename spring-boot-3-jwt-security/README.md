@@ -32,3 +32,19 @@ To build and run the project, follow these steps:
 * Run the project: mvn spring-boot:run 
 
 -> The application will be available at http://localhost:8080.
+
+## kubernetes
+hướng dẫn kubernetes
+cài đặt kompose để convert file docker-compose sang file deployment,service
+deployment =>file này để chạy trên kubernetes
+service ==> để host ra ngoài chạy trên trình duyệt
+lệnh chạy 
+kubectl apply -f persistent-volume.yaml
+kubectl apply -f persistent-volume-claim.yaml
+kubectl apply -f deployment-db.yaml
+kubectl apply -f service-db.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+kubectl get deployment => nếu xóa kubectl delete deployment eployment.yaml
+kubectl get service => nếu xóa kubectl delete service eployment.yaml
