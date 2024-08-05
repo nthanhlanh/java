@@ -5,6 +5,8 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 
 import org.springdoc.core.models.GroupedOpenApi;
@@ -46,8 +48,19 @@ public class OpenApiConfig {
                 .contact(contact)
                 .description("This API exposes endpoints to manage demo.").termsOfService("https://www.pasanabeysekara.com")
                 .license(mitLicense);
+        SecurityScheme securityScheme = new SecurityScheme()
+                .name("bearerAuth")
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
 
-        return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
+
+        return new OpenAPI()
+                .info(info)
+                .servers(List.of(devServer, prodServer))
+                .addSecurityItem(securityRequirement)
+                .components(new io.swagger.v3.oas.models.Components().addSecuritySchemes("bearerAuth", securityScheme));
     }
 
     @Bean
