@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.alibou.security.domain.User;
 import com.alibou.security.repository.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        List<GrantedAuthority> authorities = user.getRole().getPermissions().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
+        List<GrantedAuthority> authorities = userRepository.findRolesByUserId(user.getId()).stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_"+role))
                 .collect(Collectors.toList());
+//        System.out.println(authorities);
+//        authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole().name()));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities );
     }
 }

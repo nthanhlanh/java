@@ -32,7 +32,7 @@ public class CustomFilter extends OncePerRequestFilter {
             }
 
             // Alternatively, print the whole collection
-//            System.out.println("All authorities: " + authorities);
+            System.out.println("All authorities: " + authorities);
         }
 
 

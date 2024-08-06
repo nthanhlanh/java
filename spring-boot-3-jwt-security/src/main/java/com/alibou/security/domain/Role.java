@@ -1,59 +1,41 @@
 package com.alibou.security.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.alibou.security.dto.RoleType;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import static com.alibou.security.domain.Permission.ADMIN_CREATE;
-import static com.alibou.security.domain.Permission.ADMIN_DELETE;
-import static com.alibou.security.domain.Permission.ADMIN_READ;
-import static com.alibou.security.domain.Permission.ADMIN_UPDATE;
-import static com.alibou.security.domain.Permission.MANAGER_CREATE;
-import static com.alibou.security.domain.Permission.MANAGER_DELETE;
-import static com.alibou.security.domain.Permission.MANAGER_READ;
-import static com.alibou.security.domain.Permission.MANAGER_UPDATE;
-
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public enum Role {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "_role")
+@SqlResultSetMapping(
+        name = "RoleMapping",
+        entities = @EntityResult(
+                entityClass = Role.class,
+                fields = {
+                        @FieldResult(name = "id", column = "id"),
+                        @FieldResult(name = "name", column = "name")
+                }
+        )
+)
+public class Role  {
 
-  USER(Collections.emptySet()),
-  ADMIN(
-          Set.of(
-                  ADMIN_READ,
-                  ADMIN_UPDATE,
-                  ADMIN_DELETE,
-                  ADMIN_CREATE,
-                  MANAGER_READ,
-                  MANAGER_UPDATE,
-                  MANAGER_DELETE,
-                  MANAGER_CREATE
-          )
-  ),
-  MANAGER(
-          Set.of(
-                  MANAGER_READ,
-                  MANAGER_UPDATE,
-                  MANAGER_DELETE,
-                  MANAGER_CREATE
-          )
-  )
+  @Id
+  @GeneratedValue
+  private Integer id;
 
-  ;
+  @Enumerated(EnumType.STRING)
+  private RoleType name;
 
-  @Getter
-  private final Set<Permission> permissions;
+  @ManyToMany(mappedBy = "roles")
+  private Set<User> users = new HashSet<>();
 
-  public List<SimpleGrantedAuthority> getAuthorities() {
-    var authorities = getPermissions()
-            .stream()
-            .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-            .collect(Collectors.toList());
-    authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
-    return authorities;
-  }
 }

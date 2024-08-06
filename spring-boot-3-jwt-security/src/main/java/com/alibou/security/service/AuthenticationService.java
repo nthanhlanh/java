@@ -33,7 +33,7 @@ public class AuthenticationService {
 	public AuthenticationResponse register(RegisterRequest request) {
 		var user = User.builder().firstname(request.getFirstname()).lastname(request.getLastname())
 				.email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-				.role(request.getRole()).build();
+				.roles(request.getRoles()).build();
 		var savedUser = repository.save(user);
 		var jwtToken = jwtService.generateToken(user);
 		var refreshToken = jwtService.generateRefreshToken(user);
@@ -80,7 +80,7 @@ public class AuthenticationService {
 		userEmail = jwtService.extractUsername(refreshToken);
 		if (userEmail != null) {
 			var user = this.repository.findByEmail(userEmail).orElseThrow();
-			if (jwtService.isTokenValid(refreshToken, user)) {
+			if (jwtService.isTokenValid(refreshToken, user.getEmail())) {
 				var accessToken = jwtService.generateToken(user);
 				revokeAllUserTokens(user);
 				saveUserToken(user, accessToken);
