@@ -1,36 +1,48 @@
 package com.alibou.security.controller;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibou.security.domain.Book;
-import com.alibou.security.dto.BookRequest;
 import com.alibou.security.service.BookService;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/books")
-@RequiredArgsConstructor
 public class BookController {
 
-    private final BookService service;
-
-    @PostMapping
-    public ResponseEntity<?> save(
-            @RequestBody BookRequest request
-    ) {
-        service.save(request);
-        return ResponseEntity.accepted().build();
-    }
+    @Autowired
+    private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<List<Book>> findAllBooks() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<Book>> getAllBooks(Pageable pageable) {
+        return ResponseEntity.ok(bookService.getAllBooks(pageable));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Integer id) {
+        Optional<Book> book = bookService.getBookById(id);
+        return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        return ResponseEntity.ok(bookService.createBook(book));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody Book bookDetails) {
+        Optional<Book> updatedBook = bookService.updateBook(id, bookDetails);
+        return updatedBook.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
+        bookService.deleteBook(id);
+        return ResponseEntity.noContent().build();
     }
 }

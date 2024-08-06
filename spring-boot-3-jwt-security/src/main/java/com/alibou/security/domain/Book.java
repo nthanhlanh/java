@@ -28,8 +28,8 @@ public class Book {
     @Id
     @GeneratedValue
     private Integer id;
+    private String name;
     private String author;
-    private String isbn;
 
     @CreatedDate
     @Column(
@@ -43,14 +43,4 @@ public class Book {
     private LocalDateTime lastModified;
 
 
-    @CreatedBy
-    @Column(
-            nullable = false,
-            updatable = false
-    )
-    private Integer createdBy;
-
-    @LastModifiedBy
-    @Column(insertable = false)
-    private Integer lastModifiedBy;
 }

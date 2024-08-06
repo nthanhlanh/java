@@ -22,19 +22,19 @@ public class CustomFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        
+
         if (authentication != null && authentication.isAuthenticated()) {
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            
+
             // Print each authority
             for (GrantedAuthority authority : authorities) {
-                System.out.println(authority.getAuthority());
+//                System.out.println(authority.getAuthority());
             }
-            
+
             // Alternatively, print the whole collection
-            System.out.println("All authorities: " + authorities);
-        } 
-        
+//            System.out.println("All authorities: " + authorities);
+        }
+
 
         // Continue the filter chain
         filterChain.doFilter(request, response);

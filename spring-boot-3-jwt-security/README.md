@@ -6,6 +6,7 @@ This project demonstrates the implementation of security using Spring Boot 3.0 a
 * Password encryption using BCrypt
 * Role-based authorization with Spring Security
 * Customized access denied handling
+* Customized JwtAuthenticationFilter,CustomFilter
 * Logout mechanism
 * Refresh token
 
@@ -21,6 +22,7 @@ To get started with this project, you will need to have the following installed 
 
 * JDK 17+
 * Maven 3+
+* Lombok
 
 
 To build and run the project, follow these steps:

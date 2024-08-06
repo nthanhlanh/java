@@ -1,30 +1,42 @@
 package com.alibou.security.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.alibou.security.domain.Book;
-import com.alibou.security.dto.BookRequest;
 import com.alibou.security.repository.BookRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class BookService {
 
-    private final BookRepository repository;
+    @Autowired
+    private BookRepository bookRepository;
 
-    public void save(BookRequest request) {
-        var book = Book.builder()
-                .id(request.getId())
-                .author(request.getAuthor())
-                .isbn(request.getIsbn())
-                .build();
-        repository.save(book);
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
-    public List<Book> findAll() {
-        return repository.findAll();
+    public Optional<Book> getBookById(Integer id) {
+        return bookRepository.findById(id);
+    }
+
+    public Book createBook(Book book) {
+        return bookRepository.save(book);
+    }
+
+    public Optional<Book> updateBook(Integer id, Book bookDetails) {
+        return bookRepository.findById(id).map(book -> {
+            book.setName(bookDetails.getName());
+            book.setAuthor(bookDetails.getAuthor());
+            return bookRepository.save(book);
+        });
+    }
+
+    public void deleteBook(Integer id) {
+        bookRepository.deleteById(id);
     }
 }
