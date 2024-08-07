@@ -1,5 +1,6 @@
 package com.alibou.security.service.security;
 
+import com.alibou.security.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,16 +23,22 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+        //Role
         List<GrantedAuthority> authorities = userRepository.findRolesByUserId(user.getId()).stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_"+role))
                 .collect(Collectors.toList());
-//        System.out.println(authorities);
-//        authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole().name()));
+        //Permissions
+        List<GrantedAuthority> authoritiesPermissions = permissionRepository.findPermissionsByUserId(user.getId()).stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        authorities.addAll(authoritiesPermissions);
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),authorities );
     }

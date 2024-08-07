@@ -75,6 +75,6 @@ public class OpenApiConfig {
 
     @Bean
     GroupedOpenApi adminApis() { // group all APIs with `admin` in the path
-        return GroupedOpenApi.builder().group("admin").pathsToMatch("/api/v1/admin**", "/api/v1/management", "/api/v1/demo-controller").build();
+        return GroupedOpenApi.builder().group("admin").pathsToMatch("/api/v1/admin**", "/api/v1/permissions/**", "/api/v1/management").build();
     }
 }

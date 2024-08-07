@@ -41,6 +41,15 @@ public class User  {
   private Set<Role> roles = new HashSet<>();
 
   @JsonIgnore
+  @ManyToMany
+  @JoinTable(
+          name = "user_permissions",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "permission_id")
+  )
+  private List<Permission> permissions;
+
+  @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<Token> tokens;
 

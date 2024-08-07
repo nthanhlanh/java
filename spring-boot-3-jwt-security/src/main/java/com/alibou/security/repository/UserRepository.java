@@ -3,8 +3,6 @@ package com.alibou.security.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.alibou.security.domain.Role;
-import jakarta.persistence.SqlResultSetMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.alibou.security.domain.User;
