@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 			var isTokenValid = tokenRepository.findByToken(jwt).map(t -> !t.isExpired() && !t.isRevoked())
 					.orElse(false);
-			if (jwtService.isTokenValid(jwt, userDetails.getUsername()) && isTokenValid) {
+			if (jwtService.isTokenValid(jwt, userDetails.getUsername()) && Boolean.TRUE.equals(isTokenValid)) {
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
 						null, userDetails.getAuthorities());
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -73,7 +73,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println(ex.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         	response.getWriter().write(ex.getMessage());
-//            ex.printStackTrace();
         }
 	}
 }

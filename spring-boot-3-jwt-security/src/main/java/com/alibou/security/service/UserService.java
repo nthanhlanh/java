@@ -1,5 +1,7 @@
 package com.alibou.security.service;
 
+import com.alibou.security.dto.UserDto;
+import com.alibou.security.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +12,8 @@ import com.alibou.security.dto.ChangePasswordRequest;
 import com.alibou.security.repository.UserRepository;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
+    private final UserMapper userMapper;
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
 
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
@@ -35,5 +40,14 @@ public class UserService {
 
         // save the new password
         repository.save(user);
+    }
+
+
+    public UserDto getUserById(Integer id) {
+        Optional<User> user=repository.findById(id);
+        if(user.isEmpty()){
+            throw new NullPointerException();
+        }
+        return userMapper.toDto(user.get());
     }
 }
