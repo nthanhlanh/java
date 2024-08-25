@@ -12,7 +12,6 @@ import com.alibou.security.dto.ChangePasswordRequest;
 import com.alibou.security.repository.UserRepository;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -40,6 +39,7 @@ public class UserService {
 
         // save the new password
         repository.save(user);
+
     }
 
 

@@ -23,35 +23,34 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-  private final AuthenticationService service;
+    private final AuthenticationService service;
 
-  @PostMapping("/register")
-  public ResponseEntity<AuthenticationResponse> register(
-      @RequestBody RegisterRequest request
-  ) {
-    return ResponseEntity.ok(service.register(request));
-  }
-  
-  @PostMapping("/authenticate") /*login*/
-  public ResponseEntity<AuthenticationResponse> authenticate(
-      @RequestBody AuthenticationRequest request
-  ) {
-    return ResponseEntity.ok(service.authenticate(request));
-  }
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(service.register(request));
+    }
 
-  @PostMapping("/refresh-token")
-  public void refreshToken(
-      HttpServletRequest request,
-      HttpServletResponse response
-  ) throws IOException {
-    service.refreshToken(request, response);
-  }
+    @PostMapping("/authenticate") /*login*/
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(service.authenticate(request));
+    }
 
-  
-  @GetMapping("/test")
-  public void test() {
-	  System.out.println(4444);
-	  System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-  }
+    @PostMapping("/refresh-token")
+    public AuthenticationResponse refreshToken(
+            HttpServletRequest request
+    ) {
+        return service.refreshToken(request);
+    }
+
+
+    @GetMapping("/test")
+    public void test() {
+        System.out.println(4444);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+    }
 
 }

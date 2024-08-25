@@ -2,10 +2,7 @@ package com.alibou.security.dto;
 
 import com.alibou.security.domain.Role;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -17,7 +14,9 @@ public class RegisterRequest {
 
   private String firstname;
   private String lastname;
+  @NonNull
   private String email;
+  @NonNull
   private String password;
   private Set<Role> roles ;
 }
