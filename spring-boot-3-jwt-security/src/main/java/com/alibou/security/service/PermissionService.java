@@ -2,13 +2,17 @@ package com.alibou.security.service;
 
 import com.alibou.security.domain.Permission;
 import com.alibou.security.domain.User;
+import com.alibou.security.domain.UserPermission;
 import com.alibou.security.repository.PermissionRepository;
+import com.alibou.security.repository.UserPermissionRepository;
 import com.alibou.security.repository.UserRepository;
+import com.alibou.security.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PermissionService {
@@ -19,11 +23,14 @@ public class PermissionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserPermissionRepository userPermissionRepository;
+
     public List<Permission> findAll() {
         return permissionRepository.findAll();
     }
 
-    public Optional<Permission> findById(Long id) {
+    public Optional<Permission> findById(UUID id) {
         return permissionRepository.findById(id);
     }
 
@@ -31,11 +38,11 @@ public class PermissionService {
         return permissionRepository.save(permission);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         permissionRepository.deleteById(id);
     }
 
-    public Permission update(Long id, Permission permissionDetails) {
+    public Permission update(UUID id, Permission permissionDetails) {
         Permission permission = permissionRepository.findById(id).orElseThrow(() -> new RuntimeException("Permission not found"));
         permission.setName(permissionDetails.getName());
         permission.setPath(permissionDetails.getPath());
@@ -43,17 +50,14 @@ public class PermissionService {
         return permissionRepository.save(permission);
     }
 
-    public void addPermissionToUser(Integer userId, Long permissionId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Permission permission = permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"));
-        user.getPermissions().add(permission);
-        userRepository.save(user);
+    public void addPermissionToUser(UUID userId, UUID permissionId) {
+        UserPermission userPermission=UserPermission.builder().permissionId(permissionId).userId(userId).build();
+        userPermissionRepository.save(userPermission);
     }
 
-    public void removePermissionFromUser(Integer userId, Long permissionId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Permission permission = permissionRepository.findById(permissionId).orElseThrow(() -> new RuntimeException("Permission not found"));
-        user.getPermissions().remove(permission);
-        userRepository.save(user);
+    public void removePermissionFromUser(UUID userId, UUID permissionId) {
+
+        List<UserPermission> userPermissions= userPermissionRepository.findByUserIdAndPermissionId(userId,permissionId);
+        userPermissionRepository.deleteAll(userPermissions);
     }
 }

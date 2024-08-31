@@ -5,13 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Set;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,16 +26,9 @@ import java.util.Set;
                 }
         )
 )
-public class Role  {
-
-  @Id
-  @GeneratedValue
-  private Integer id;
+public class Role extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   private RoleType name;
-
-  @ManyToMany(mappedBy = "roles")
-  private Set<User> users = new HashSet<>();
 
 }

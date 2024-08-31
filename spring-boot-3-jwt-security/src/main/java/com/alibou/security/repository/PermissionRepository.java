@@ -7,14 +7,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission, Long> {
+public interface PermissionRepository extends JpaRepository<Permission, UUID> {
 
     @Query(value = "SELECT r.path FROM permissions r " +
             "INNER JOIN user_permissions ur ON r.id = ur.permission_id " +
             "WHERE ur.user_id = :userId", nativeQuery = true)
-    List<String> findPermissionsByUserId(@Param("userId") Integer userId);
+    List<String> findPermissionsByUserId(@Param("userId") UUID userId);
 
     @Query(value = "SELECT r.path FROM permissions r " +
             "INNER JOIN user_permissions ur ON r.id = ur.permission_id " +

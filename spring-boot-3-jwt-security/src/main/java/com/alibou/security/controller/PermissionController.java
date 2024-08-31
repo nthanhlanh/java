@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/permissions")
@@ -24,7 +25,7 @@ public class PermissionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Permission> getPermissionById(@PathVariable Long id) {
+    public ResponseEntity<Permission> getPermissionById(@PathVariable UUID id) {
         Optional<Permission> permission = permissionService.findById(id);
         return permission.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -35,7 +36,7 @@ public class PermissionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Permission> updatePermission(@PathVariable Long id, @RequestBody Permission permissionDetails) {
+    public ResponseEntity<Permission> updatePermission(@PathVariable UUID id, @RequestBody Permission permissionDetails) {
         try {
             Permission updatedPermission = permissionService.update(id, permissionDetails);
             return ResponseEntity.ok(updatedPermission);
@@ -45,7 +46,7 @@ public class PermissionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePermission(@PathVariable UUID id) {
         try {
             permissionService.deleteById(id);
             return ResponseEntity.noContent().build();
@@ -55,7 +56,7 @@ public class PermissionController {
     }
 
     @PostMapping("/user/{userId}/add/{permissionId}")
-    public ResponseEntity<Void> addPermissionToUser(@PathVariable Integer userId, @PathVariable Long permissionId) {
+    public ResponseEntity<Void> addPermissionToUser(@PathVariable UUID userId, @PathVariable UUID permissionId) {
         try {
             permissionService.addPermissionToUser(userId, permissionId);
             return ResponseEntity.ok().build();
@@ -65,7 +66,7 @@ public class PermissionController {
     }
 
     @DeleteMapping("/user/{userId}/remove/{permissionId}")
-    public ResponseEntity<Void> removePermissionFromUser(@PathVariable Integer userId, @PathVariable Long permissionId) {
+    public ResponseEntity<Void> removePermissionFromUser(@PathVariable UUID userId, @PathVariable UUID permissionId) {
         try {
             permissionService.removePermissionFromUser(userId, permissionId);
             return ResponseEntity.ok().build();

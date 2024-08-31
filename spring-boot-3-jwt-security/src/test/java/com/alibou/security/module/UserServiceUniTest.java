@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -106,17 +107,17 @@ class UserServiceUniTest {
 
     @Test
     void getUserById() {
-        User mockUser = User.builder().id(1).build();
+        User mockUser = User.builder().id(UUID.randomUUID()).build();
 
         // Mock hành vi của myRepository
-        when(repository.findById(any())).thenReturn(Optional.ofNullable(mockUser));
+        when(repository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(mockUser));
 
         // Mock hành vi của userMapper
-        UserDto mockUserDto = UserDto.builder().id(1).email("abc@gmail.com").build(); // Giả sử bạn có class UserDto
+        UserDto mockUserDto = UserDto.builder().id(UUID.randomUUID()).email("abc@gmail.com").build(); // Giả sử bạn có class UserDto
         when(userMapper.toDto(mockUser)).thenReturn(mockUserDto);
 
         // Gọi phương thức cần test
-        var result = userService.getUserById(any());
+        var result = userService.getUserById(UUID.randomUUID());
 
         // kim tra kết quả
         assertNotNull(result);
@@ -126,7 +127,7 @@ class UserServiceUniTest {
     @Test
     void testGetUserById_NullPointerException() {
         // Arrange
-        Integer userId = 1;
+        UUID userId = UUID.randomUUID();
         when(repository.findById(userId)).thenReturn(Optional.empty());
 
         // Act & Assert

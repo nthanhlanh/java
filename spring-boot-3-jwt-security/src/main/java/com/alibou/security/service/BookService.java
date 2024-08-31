@@ -9,6 +9,7 @@ import com.alibou.security.domain.Book;
 import com.alibou.security.repository.BookRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BookService {
@@ -20,7 +21,7 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    public Optional<Book> getBookById(Integer id) {
+    public Optional<Book> getBookById(UUID id) {
         return bookRepository.findById(id);
     }
 
@@ -28,7 +29,7 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public Optional<Book> updateBook(Integer id, Book bookDetails) {
+    public Optional<Book> updateBook(UUID id, Book bookDetails) {
         return bookRepository.findById(id).map(book -> {
             book.setName(bookDetails.getName());
             book.setAuthor(bookDetails.getAuthor());
@@ -36,7 +37,7 @@ public class BookService {
         });
     }
 
-    public void deleteBook(Integer id) {
+    public void deleteBook(UUID id) {
         bookRepository.deleteById(id);
     }
 }

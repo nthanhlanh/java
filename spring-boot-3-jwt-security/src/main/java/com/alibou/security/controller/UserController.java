@@ -9,6 +9,7 @@ import com.alibou.security.dto.ChangePasswordRequest;
 import com.alibou.security.service.UserService;
 
 import java.security.Principal;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -26,7 +27,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/{id}")
-    public UserDto getUserById(Integer id){
+    public UserDto getUserById(UUID id){
         return  service.getUserById(id);
     }
 }

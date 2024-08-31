@@ -1,7 +1,10 @@
 package com.alibou.security.service;
 
+import com.alibou.security.domain.UserPermission;
 import com.alibou.security.dto.UserDto;
 import com.alibou.security.mapper.UserMapper;
+import com.alibou.security.repository.UserPermissionRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +16,7 @@ import com.alibou.security.repository.UserRepository;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
     private final UserMapper userMapper;
+    private final UserPermissionRepository userPermissionRepository;
+
+
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
 
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
@@ -43,11 +50,19 @@ public class UserService {
     }
 
 
-    public UserDto getUserById(Integer id) {
+    public UserDto getUserById(@NonNull final UUID id) {
         Optional<User> user=repository.findById(id);
         if(user.isEmpty()){
             throw new NullPointerException();
         }
         return userMapper.toDto(user.get());
+    }
+
+    public User save(@NonNull final User user){
+        return repository.save(user);
+    }
+
+    public UserPermission saveUserPermission(@NonNull final UserPermission userPermission){
+        return userPermissionRepository.save(userPermission);
     }
 }

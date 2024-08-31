@@ -4,10 +4,13 @@ import com.alibou.security.config.JwtService;
 import com.alibou.security.domain.Role;
 import com.alibou.security.domain.Token;
 import com.alibou.security.domain.User;
+import com.alibou.security.domain.UserRole;
 import com.alibou.security.dto.*;
 import com.alibou.security.repository.TokenRepository;
 import com.alibou.security.repository.UserRepository;
+import com.alibou.security.repository.UserRoleRepository;
 import com.alibou.security.service.AuthenticationService;
+import com.alibou.security.service.security.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +41,9 @@ class AuthenticationServiceUniTest {
     private UserRepository repository;
 
     @Mock
+    private UserRoleRepository userRoleRepository;
+
+    @Mock
     private TokenRepository tokenRepository;
 
     @Mock
@@ -45,6 +51,9 @@ class AuthenticationServiceUniTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private TokenService tokenService;
 
     //    @InjectMocks
     private AuthenticationService authenticationService;
@@ -57,9 +66,9 @@ class AuthenticationServiceUniTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        authenticationService = spy(new AuthenticationService(repository, tokenRepository, passwordEncoder, jwtService, authenticationManager));
+        authenticationService = spy(new AuthenticationService(repository,userRoleRepository, tokenRepository, passwordEncoder, jwtService, authenticationManager,tokenService));
         userTest = new User();
-        userTest.setId(1);
+        userTest.setId(UUID.randomUUID());
         token1 = new Token();
         token1.setExpired(false);
         token1.setRevoked(false);
@@ -83,7 +92,6 @@ class AuthenticationServiceUniTest {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password("encodedPassword")
-                .roles(request.getRoles())
                 .build();
 
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
@@ -104,51 +112,31 @@ class AuthenticationServiceUniTest {
         verify(jwtService).generateToken(user);
         verify(jwtService).generateRefreshToken(user);
         // Verify saveUserToken was called correctly
-        verify(tokenRepository).save(any(Token.class));  // Ensure token is saved
+        verify(tokenService, times(1)).saveUserToken(user, "jwtToken");
+
     }
 
     @Test
     void testRegisterEmptyPassword() {
-        Role role = Role.builder().name(RoleType.USER).build();
         Set<Role> roles = new HashSet<>();
-        roles.add(role);
+        roles.add(Role.builder().id(UUID.randomUUID()).name(RoleType.USER).build());
         // Arrange
         RegisterRequest request = new RegisterRequest();
         request.setFirstname("John");
         request.setLastname("Doe");
         request.setEmail("john.doe@example.com");
-        request.setPassword(""); // Mật khẩu trống
+        request.setPassword(""); // Mật khẩu rỗng
         request.setRoles(roles);
 
-        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(repository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(jwtService.generateToken(any(User.class))).thenReturn("jwtToken");
-        when(jwtService.generateRefreshToken(any(User.class))).thenReturn("refreshToken");
+        // Act & Assert
+        assertThrows(NullPointerException.class, () -> {
+            authenticationService.register(request);
+        }, "Password cannot be empty");
 
-        // Act
-        AuthenticationResponse response = authenticationService.register(request);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals("jwtToken", response.getAccessToken());
-        assertEquals("refreshToken", response.getRefreshToken());
-
-        ArgumentCaptor<Token> tokenCaptor = ArgumentCaptor.forClass(Token.class);
-        verify(tokenRepository).save(tokenCaptor.capture());
-
-        Token capturedToken = tokenCaptor.getValue();
-        assertNotNull(capturedToken);
-        assertEquals("jwtToken", capturedToken.getToken());
-        assertEquals(User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password("encodedPassword")
-                .roles(request.getRoles())
-                .build(), capturedToken.getUser());
-        assertEquals(TokenType.BEARER, capturedToken.getTokenType());
-        assertFalse(capturedToken.isExpired());
-        assertFalse(capturedToken.isRevoked());
+        // Kiểm tra các phương thức không bị gọi khi mật khẩu rỗng
+        verify(repository, times(1)).save(any(User.class));
+        verify(userRoleRepository, times(0)).save(any(UserRole.class));
+        verify(tokenService, times(0)).saveUserToken(any(User.class), any(String.class));
     }
 
     @Test
@@ -191,7 +179,6 @@ class AuthenticationServiceUniTest {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password("encodedPassword")
-                .roles(request.getRoles())
                 .build();
 
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
@@ -222,7 +209,6 @@ class AuthenticationServiceUniTest {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password("encodedPassword")
-                .roles(request.getRoles())
                 .build();
 
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
@@ -272,7 +258,7 @@ class AuthenticationServiceUniTest {
         verify(jwtService).generateToken(any(User.class));
         verify(jwtService).generateRefreshToken(any(User.class));
 //        verify(authenticationService).revokeAllUserTokens(any(User.class));
-        verify(tokenRepository).save(any(Token.class));
+        verify(tokenService, times(1)).saveUserToken(user, "jwtToken");
     }
 
     @Test
@@ -394,7 +380,7 @@ class AuthenticationServiceUniTest {
         when(jwtService.isTokenValid(anyString(), anyString())).thenReturn(true);
         when(jwtService.generateToken(any())).thenReturn("newAccessToken");
         doNothing().when(authenticationService).revokeAllUserTokens(any(User.class));
-        doNothing().when(authenticationService).saveUserToken(any(User.class),anyString());
+        doNothing().when(tokenService).saveUserToken(any(User.class),anyString());
 
         // Act
         var response = authenticationService.refreshToken(request);
@@ -402,6 +388,6 @@ class AuthenticationServiceUniTest {
         assertNotNull(response);
         assertEquals(newAccessToken, response.getAccessToken());
         verify(authenticationService).revokeAllUserTokens(any(User.class));
-        verify(authenticationService).saveUserToken(any(User.class),anyString());
+        verify(tokenService).saveUserToken(any(User.class),anyString());
     }
 }

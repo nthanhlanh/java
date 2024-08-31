@@ -1,7 +1,9 @@
 package com.alibou.security.domain;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,20 +13,18 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "permissions")
-public class Permission extends BaseEntity {
+@Table(name = "_user_roles")
+public class UserRole extends BaseEntity {
 
-    private String name;
+    private UUID userId;
 
-    private String path;
-
-    @Nullable
-    private UUID parentId;
+    private UUID roleId;
 
 }
