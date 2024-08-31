@@ -33,58 +33,58 @@ public class SecurityApplication {
 		SpringApplication.run(SecurityApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner commandLineRunner(
-			PasswordEncoder passwordEncoder,
-			UserService userService,
-			RoleService roleService,
-			PermissionService permissionService
-	) {
-
-		return args -> {
-			//user
-			var admin = User.builder()
-					.firstname("Admin")
-					.lastname("Admin")
-					.email("admin@mail.com")
-					.password(passwordEncoder.encode("password"))
-					.build();
-			var saveAdmin= userService.save(admin);
-
-			var manager = User.builder()
-					.firstname("Admin")
-					.lastname("Admin")
-					.email("manager@mail.com")
-					.password(passwordEncoder.encode("password"))
-					.build();
-			var saveManager= userService.save(manager);
-			//role
-			var roleAdmin=roleService.save(Role.builder().name(ADMIN).build());
-			var roleManager=roleService.save(Role.builder().name(MANAGER).build());
-			var roleUser=roleService.save(Role.builder().name(USER).build());
-
-			//userRole
-			roleService.addRoleWithUser(roleAdmin.getId(),saveAdmin.getId());
-			roleService.addRoleWithUser(roleUser.getId(),saveManager.getId());
-			roleService.addRoleWithUser(roleManager.getId(),saveManager.getId());
-			//permission
-			var auth=permissionService.save(Permission.builder().name("auth").path("auth").build());
-			var user=permissionService.save(Permission.builder().name("user").path("user").build());
-			var permission=permissionService.save(Permission.builder().name("permissions").path("permissions").build());
-			var management=permissionService.save(Permission.builder().name("management").path("management").build());
-			var book=permissionService.save(Permission.builder().name("book").path("book").build());
-
-
-			//userPermission
-			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(auth.getId()).build());
-			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(user.getId()).build());
-			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(permission.getId()).build());
-			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(book.getId()).build());
-
-			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(auth.getId()).build());
-			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(management.getId()).build());
-			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(book.getId()).build());
-
-		};
-	}
+//	@Bean
+//	public CommandLineRunner commandLineRunner(
+//			PasswordEncoder passwordEncoder,
+//			UserService userService,
+//			RoleService roleService,
+//			PermissionService permissionService
+//	) {
+//
+//		return args -> {
+//			//user
+//			var admin = User.builder()
+//					.firstname("Admin")
+//					.lastname("Admin")
+//					.email("admin@mail.com")
+//					.password(passwordEncoder.encode("password"))
+//					.build();
+//			var saveAdmin= userService.save(admin);
+//
+//			var manager = User.builder()
+//					.firstname("Admin")
+//					.lastname("Admin")
+//					.email("manager@mail.com")
+//					.password(passwordEncoder.encode("password"))
+//					.build();
+//			var saveManager= userService.save(manager);
+//			//role
+//			var roleAdmin=roleService.save(Role.builder().name(ADMIN).build());
+//			var roleManager=roleService.save(Role.builder().name(MANAGER).build());
+//			var roleUser=roleService.save(Role.builder().name(USER).build());
+//
+//			//userRole
+//			roleService.addRoleWithUser(roleAdmin.getId(),saveAdmin.getId());
+//			roleService.addRoleWithUser(roleUser.getId(),saveManager.getId());
+//			roleService.addRoleWithUser(roleManager.getId(),saveManager.getId());
+//			//permission
+//			var auth=permissionService.save(Permission.builder().name("auth").path("auth").build());
+//			var user=permissionService.save(Permission.builder().name("user").path("user").build());
+//			var permission=permissionService.save(Permission.builder().name("permissions").path("permissions").build());
+//			var management=permissionService.save(Permission.builder().name("management").path("management").build());
+//			var book=permissionService.save(Permission.builder().name("book").path("book").build());
+//
+//
+//			//userPermission
+//			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(auth.getId()).build());
+//			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(user.getId()).build());
+//			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(permission.getId()).build());
+//			userService.saveUserPermission(UserPermission.builder().userId(saveAdmin.getId()).permissionId(book.getId()).build());
+//
+//			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(auth.getId()).build());
+//			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(management.getId()).build());
+//			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(book.getId()).build());
+//
+//		};
+//	}
 }

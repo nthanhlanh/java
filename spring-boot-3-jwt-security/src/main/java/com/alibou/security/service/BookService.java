@@ -1,6 +1,8 @@
 package com.alibou.security.service;
 
 import com.alibou.security.exception.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,11 +14,12 @@ import com.alibou.security.repository.BookRepository;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public Page<Book> getAllBooks(Pageable pageable) {
         return bookRepository.findAll(pageable);
@@ -39,20 +42,18 @@ public class BookService {
     }
 
     public void deleteBook(UUID id) {
-        // Tìm đối tượng theo ID
+        log.info("Attempting to soft delete book with ID: {}", id);
         Optional<Book> optionalBook = bookRepository.findById(id);
 
         if (optionalBook.isPresent()) {
-            // Lấy đối tượng Book từ Optional
             Book book = optionalBook.get();
 
-            // Đặt trạng thái xóa mềm
             book.setIsDeleted(true);
 
-            // Lưu đối tượng đã được cập nhật
             bookRepository.save(book);
+            log.info("Successfully soft deleted book with ID: {}", id);
         } else {
-            // Xử lý trường hợp không tìm thấy đối tượng
+            log.error("Book not found with ID: {}", id);
             throw new EntityNotFoundException("Book not found with ID: " + id);
         }
     }
