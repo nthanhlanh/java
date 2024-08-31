@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.envers.Audited;
 
 import java.util.UUID;
 
+@Audited
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder

@@ -1,5 +1,6 @@
 package com.alibou.security.service;
 
+import com.alibou.security.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,21 @@ public class BookService {
     }
 
     public void deleteBook(UUID id) {
-        bookRepository.deleteById(id);
+        // Tìm đối tượng theo ID
+        Optional<Book> optionalBook = bookRepository.findById(id);
+
+        if (optionalBook.isPresent()) {
+            // Lấy đối tượng Book từ Optional
+            Book book = optionalBook.get();
+
+            // Đặt trạng thái xóa mềm
+            book.setIsDeleted(true);
+
+            // Lưu đối tượng đã được cập nhật
+            bookRepository.save(book);
+        } else {
+            // Xử lý trường hợp không tìm thấy đối tượng
+            throw new EntityNotFoundException("Book not found with ID: " + id);
+        }
     }
 }

@@ -83,6 +83,7 @@ public class SecurityApplication {
 
 			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(auth.getId()).build());
 			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(management.getId()).build());
+			userService.saveUserPermission(UserPermission.builder().userId(saveManager.getId()).permissionId(book.getId()).build());
 
 		};
 	}
