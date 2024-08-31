@@ -9,6 +9,7 @@ This project demonstrates the implementation of security using Spring Boot 3.0 a
 * Customized JwtAuthenticationFilter,CustomFilter
 * Logout mechanism
 * Refresh token
+* Unitest(jacoco)
 
 ## Technologies
 * Spring Boot 3.0
@@ -23,6 +24,10 @@ To get started with this project, you will need to have the following installed 
 * JDK 17+
 * Maven 3+
 * Lombok
+
+## run Unitest Jacoco
+* mvn clean test jacoco:report
+
 
 
 To build and run the project, follow these steps:
