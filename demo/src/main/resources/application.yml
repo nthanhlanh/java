@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: BCTK
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+      content-type: text/html;charset=UTF-8
+server:
+  port: 8081  # Thay '8081' b?ng c?ng b?n mu?n s? d?ng
+
+
